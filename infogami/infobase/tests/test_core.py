@@ -94,3 +94,16 @@ class TestThingGetProperty:
         type_.get_property('no_such_property')
 
         assert store.requested == []
+
+    def test_returns_the_first_property_when_a_name_is_duplicated(self):
+        store, type_ = make_type(
+            [
+                property_dict('title', '/type/string'),
+                property_dict('title', '/type/text'),
+            ]
+        )
+
+        p = type_.get_property('title')
+
+        assert p.expected_type.key == '/type/string'
+        assert store.requested == ['/type/string', '/type/property']
